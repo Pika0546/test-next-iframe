@@ -1,27 +1,30 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
+    const removeScrollFromChild = (e) => {
+        console.log(e);
+    }
+
+    const iframeDocRef = useRef();
     useEffect(() => {
         if (window) {
             try {
                 setTimeout(() => {
-                    const iframe = window.frames["myFrame"].contentWindow;
-                    console.log(iframe);
-                    const iframeDoc = iframe.document;
-                    const ele = iframeDoc.getElementById("bookContainer");
-                    const newEle = ele.cloneNode(true);
-                    ele.parentNode.replaceChild(newEle, ele);
-                    console.log(iframeDoc, ele);
-                    if (ele) {
-                        ele.onscroll = () => {};
-                    }
+                    iframeDocRef.current = window.frames["myFrame"].contentWindow.document;
+                    console.log(iframeDocRef.current);
+                    iframeDocRef.current.addEventListener("click", removeScrollFromChild);
                 }, [3000]);
             } catch (error) {
                 console.log(error);
             }
+            // return () => {
+            //     if(iframeDocRef.current){
+            //         iframeDocRef.current.removeEventListener("click", removeScrollFromChild);
+            //     }
+            // }
         }
     }, []);
     return (
