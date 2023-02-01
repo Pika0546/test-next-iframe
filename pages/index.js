@@ -1,29 +1,18 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import ChildComp from "../components/ChildComp";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
-    useEffect(() => {
-        if (window) {
-            try {
-                setTimeout(() => {
-                    const iframe = window.frames["myFrame"].contentWindow;
-                    console.log(iframe);
-                    const iframeDoc = iframe.document;
-                    const ele = iframeDoc.getElementById("bookContainer");
-                    const newEle = ele.cloneNode(true);
-                    ele.parentNode.replaceChild(newEle, ele);
-                    console.log(iframeDoc, ele);
-                    if (ele) {
-                        ele.onscroll = () => {};
-                    }
-                }, [3000]);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    }, []);
+
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(()=>{
+//         const vw = Math.max((document.documentElement.clientWidth || 0), window.innerWidth || 0)
+// const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+        setIsMounted(true);
+    },[])
+    
     return (
         <div className={styles.container}>
             <Head>
@@ -34,12 +23,17 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <iframe
-                id="myFrame"
-                src="/iframe"
-                width="900px"
-                height="600px"
-            ></iframe>
+            {isMounted && <ChildComp/>}
+
+            <div style={{padding: "50px"}}>
+            {[...Array(10000).keys()].map(item => {
+                return (
+                    <div key={item} className={styles.item}>
+                        lorem {item}
+                    </div>
+                )
+            })}
+            </div>
         </div>
     );
 }
